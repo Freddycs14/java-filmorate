@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,12 @@ public class UserController {
     public User createUser(@Valid @RequestBody User user) {
         validateLogin(user);
         if (user.getName() == null || user.getName().isBlank()) {
-            user = new User(user.getEmail(), user.getLogin(), user.getLogin(), user.getBirthday());
+            user = User.builder()
+                    .email(user.getEmail())
+                    .login(user.getLogin())
+                    .name(user.getLogin())
+                    .birthday(user.getBirthday())
+                    .build();
         }
         user.setId(getNextId());
         users.put(user.getId(), user);
@@ -40,7 +46,12 @@ public class UserController {
         validateLogin(user);
         int id = user.getId();
         if (user.getName() == null || user.getName().isBlank()) {
-            user = new User(user.getEmail(), user.getLogin(), user.getLogin(), user.getBirthday());
+            user = User.builder()
+                    .email(user.getEmail())
+                    .login(user.getLogin())
+                    .name(user.getLogin())
+                    .birthday(user.getBirthday())
+                    .build();
         }
         user.setId(id);
         if (users.containsKey(user.getId())) {
@@ -62,4 +73,7 @@ public class UserController {
         return nextId++;
     }
 
+    public Map<Integer, User> getUsers() {
+        return users;
+    }
 }
