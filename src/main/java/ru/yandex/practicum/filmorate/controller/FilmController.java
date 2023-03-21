@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 @Slf4j
 public class FilmController {
-    private Map<Integer, Film> films = new HashMap<>();
+    private final Map<Integer, Film> films = new HashMap<>();
     private static final LocalDate LIMIT_DATE = LocalDate.of(1895, Month.DECEMBER, 28);
     private int nextId = 1;
 

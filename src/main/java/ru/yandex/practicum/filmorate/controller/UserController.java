@@ -16,7 +16,7 @@ import java.util.Map;
 @Slf4j
 public class UserController {
 
-    private Map<Integer, User> users = new HashMap<>();
+    private final Map<Integer, User> users = new HashMap<>();
     private int nextId = 1;
 
     @GetMapping("/users")
