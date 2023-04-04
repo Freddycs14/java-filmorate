@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -75,8 +76,8 @@ public class UserControllerTests {
     public void shouldUpdateUserWithIncorrectId() {
         userService.createUser(user1);
         user2.setId(100);
-        ValidationException exception = assertThrows(
-                ValidationException.class,
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class,
                 () -> userService.updateUser(user2));
         assertEquals("Пользователь не найден", exception.getMessage());
     }

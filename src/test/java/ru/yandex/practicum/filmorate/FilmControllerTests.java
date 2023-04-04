@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -63,8 +64,8 @@ public class FilmControllerTests {
     public void shouldUpdateFilmWithIncorrectId() {
         filmService.createFilm(film1);
         film2.setId(100);
-        ValidationException exception = assertThrows(
-                ValidationException.class,
+        FilmNotFoundException exception = assertThrows(
+                FilmNotFoundException.class,
                 () -> filmService.updateFilm(film2));
         assertEquals("Фильма нет в списке", exception.getMessage());
     }
