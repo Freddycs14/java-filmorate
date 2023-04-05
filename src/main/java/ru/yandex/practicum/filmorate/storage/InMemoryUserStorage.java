@@ -6,10 +6,8 @@ import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -29,6 +27,7 @@ public class InMemoryUserStorage implements UserStorage {
                     .build();
         }
         user.setId(getNextId());
+        user.setFriends(new HashSet<>());
         users.put(user.getId(), user);
         log.info("Добавление пользователя");
         return user;
@@ -38,16 +37,19 @@ public class InMemoryUserStorage implements UserStorage {
     public User updateUser(User user) {
         validateLogin(user);
         int id = user.getId();
-        if (user.getName() == null || user.getName().isBlank()) {
-            user = User.builder()
+        if (users.containsKey(id)) {
+            User oldUser = users.get(id);
+            Set<Integer> friends = oldUser.getFriends();
+            if (user.getName() == null || user.getName().isBlank()) {
+                user = User.builder()
                     .email(user.getEmail())
                     .login(user.getLogin())
                     .name(user.getLogin())
                     .birthday(user.getBirthday())
                     .build();
-        }
-        user.setId(id);
-        if (users.containsKey(user.getId())) {
+            }
+            user.setId(id);
+            user.setFriends(friends);
             users.put(user.getId(), user);
         } else {
             throw new UserNotFoundException("Пользователь не найден");
@@ -81,13 +83,75 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
+    @Override
+    public User addFriend(int userId, int friendId) {
+        checkUsers(userId);
+        checkUsers(friendId);
+        if (users.get(userId).getFriends().contains(friendId)) {
+            throw new ValidationException("Нельзя добавить пользователя в друзья дважды");
+        }
+        addToFriends(userId,friendId);
+        if (users.get(friendId).getFriends().contains(userId)) {
+            throw new ValidationException("Нельзя добавить пользователя в друзья дважды");
+        }
+        addToFriends(friendId,userId);
+        log.info("Пользователь с id: {} добавил в друзья пользователя с id: {}", userId, friendId);
+        return users.get(userId);
+    }
+
+    @Override
+    public User deleteFriend(int userId, int friendId) {
+        checkUsers(userId);
+        checkUsers(friendId);
+        removeFromFriends(userId,friendId);
+
+        removeFromFriends(friendId,userId);
+        log.info("Пользователь с id: {} удалён из списка друзей пользователя с id: {}", friendId, userId);
+        return users.get(userId);
+    }
+
+    @Override
+    public List<User> getUserFriends(int userId) {
+        checkUsers(userId);
+        Set<Integer> userFriends = users.get(userId).getFriends();
+        return userFriends.stream()
+                .map(users::get)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> getListCommonFriends(int firstUserId, int secondUserId) {
+        checkUsers(firstUserId);
+        checkUsers(secondUserId);
+        Set<Integer> firstUserFriends = users.get(firstUserId).getFriends();
+        Set<Integer> secondUserFriends = users.get(secondUserId).getFriends();
+        return firstUserFriends.stream()
+                .filter(secondUserFriends::contains)
+                .map(users::get)
+                .collect(Collectors.toList());
+    }
+
+    private void checkUsers(int userId) {
+        if (!users.containsKey(userId)) {
+            throw new UserNotFoundException("Пользователь c id: " + userId + "не найден");
+        }
+    }
+
     private void validateLogin(User user) {
         if (user.getLogin().contains(" ")) {
             throw new ValidationException("Логин не должен содержать пробелы");
         }
     }
 
-    public int getNextId() {
+    private int getNextId() {
         return nextId++;
+    }
+
+    private void addToFriends(int userId, int friendId) {
+        users.get(userId).getFriends().add(friendId);
+    }
+
+    private void removeFromFriends(int userId, int friendId) {
+        users.get(userId).getFriends().remove(friendId);
     }
 }
