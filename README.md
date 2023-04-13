@@ -13,14 +13,14 @@ https://dbdiagram.io/d/6435bd658615191cfa8d2046
 
     SELECT *
 
-    FROM film;
+    FROM films;
 
 #### 2. Получение пользователя по id:
 
 
       SELECT *
 
-      FROM user
+      FROM users
 
       WHERE user_id = 1;
 
@@ -29,7 +29,7 @@ https://dbdiagram.io/d/6435bd658615191cfa8d2046
 
 
       SELECT name
-      FROM film
+      FROM films
       WHERE film_id IN
          (SELECT film.id
          FROM likes
