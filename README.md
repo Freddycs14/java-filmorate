@@ -1,38 +1,115 @@
 # java-filmorate
 Template repository for Filmorate project.
-![Untitled](https://user-images.githubusercontent.com/118081787/231573383-8a4563c5-6f49-4f85-8806-184485ee22f1.png)
+
+
+![Untitled (1)](https://user-images.githubusercontent.com/118081787/231871895-0d05c4d4-5b02-4c71-8109-645a59dcb1fd.png)
+
 Ссылка на диаграмму:
 https://dbdiagram.io/d/6435bd658615191cfa8d2046
 
-Примеры запросов:
-1. Получение списка всех фильмов:
+### Примеры запросов:
+#### 1. Получение списка всех фильмов:
+
 
     SELECT *
 
     FROM film;
 
+#### 2. Получение пользователя по id:
 
 
-3. Получение пользователя по id:
+      SELECT *
 
-   SELECT *
+      FROM user
 
-   FROM user
-
-   WHERE user_id = 1;
+      WHERE user_id = 1;
 
 
-3. Получение списка топ-5 фильмов по популярности:
+#### 3. Получение списка топ-5 фильмов по популярности:
 
-   SELECT f.name
 
-   FROM film AS f
+      SELECT name
+      FROM film
+      WHERE film_id IN
+         (SELECT film.id
+         FROM likes
+         GROUP BY film_id
+         ORDER BY COUNT(user_id) DESC
+         LIMIT 5);
 
-   RIGHT JOIN film_likes AS fl ON f.film_id = fl.film_id
+### Пояснения к диаграмме:
+#### 1. Таблица films:
 
-   GROUP BY fl.film_id
-
-   ORDER BY SUM(user_id) DESC
+   film_id - Униккальный ключ. ID фильма
    
-   LIMIT 5;
+   name - Название фильма
+   
+   description - Описание фильма
+
+   duration - Длительность фильма
+
+   release_date - Дата выхода фильма
+
+   mpa_id - Уникальный ключ . ID Рейтинга фильма
+   
+
+#### 2. Таблица film_genre:
+
+   film_id - Уникальный ключ. ID фильма
+
+   genre_id - Уникальный ключ. ID жанра фильма
+
+
+#### 3. Таблица film_likes:
+
+   user_id - Уникальный ключ. ID пользователя
+
+   film_id - Уникальный ключ. ID фильма
+
+
+#### 4. Таблица friends:
+
+   user_id - Уникальный ключ. ID пользователя
+
+   friend_id - Уникальный ключ. ID друга пользователя
+
+   status - статус дружбы
+
+
+#### 6. Таблица genre:
+
+   genre_id - Уникальный ключ. ID жанра фильма
+
+   name - жанр фильма
+
+
+#### 7. Таблица mpa:
+
+   mpa_id - Уникальный ключ . ID Рейтинга фильма
+
+   rating - Рейтинг фильма. Значения могут быть следующими:
+
+   - G — у фильма нет возрастных ограничений,
+
+   - PG — детям рекомендуется смотреть фильм с родителями,
+
+   - PG-13 — детям до 13 лет просмотр не желателен,
+
+   - R — лицам до 17 лет просматривать фильм можно только в присутствии взрослого,
+
+   - NC-17 — лицам до 18 лет просмотр запрещён.
+   
+
+#### 8. Таблица users:
+
+   user_id - Уникальный ключ. ID пользователя
+
+   email - Почтовый адресс пользователя
+
+   name - Имя пользователя
+
+   login - Логин пользователя
+
+   birthday - Дата рождения пользователя
+
  
