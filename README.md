@@ -1,8 +1,8 @@
 # java-filmorate
 Template repository for Filmorate project.
 
+![123](https://user-images.githubusercontent.com/118081787/234121337-d3e50b08-38a4-4d42-94ab-2f96c65b7552.jpg)
 
-![Untitled (1)](https://user-images.githubusercontent.com/118081787/231871895-0d05c4d4-5b02-4c71-8109-645a59dcb1fd.png)
 
 Ссылка на диаграмму:
 https://dbdiagram.io/d/6435bd658615191cfa8d2046
@@ -28,7 +28,7 @@ https://dbdiagram.io/d/6435bd658615191cfa8d2046
 #### 3. Получение списка топ-5 фильмов по популярности:
 
 
-      SELECT name
+      SELECT *
       FROM films
       WHERE film_id IN
          (SELECT film.id
@@ -40,7 +40,7 @@ https://dbdiagram.io/d/6435bd658615191cfa8d2046
 ### Пояснения к диаграмме:
 #### 1. Таблица films:
 
-   film_id - Униккальный ключ. ID фильма
+   film_id - ID фильма (Первичный ключ)
    
    name - Название фильма
    
@@ -55,37 +55,43 @@ https://dbdiagram.io/d/6435bd658615191cfa8d2046
 
 #### 2. Таблица film_genre:
 
-   film_id - Уникальный ключ. ID фильма
+   film_id - ID фильма (Внешний ключ)
 
-   genre_id - Уникальный ключ. ID жанра фильма
+   genre_id - ID жанра (Внешний ключ)
+   
+   Поля film_id и genre_id составляют первичный ключ.
 
 
 #### 3. Таблица film_likes:
 
-   user_id - Уникальный ключ. ID пользователя
+   user_id - ID пользователя (Внешний ключ)
 
-   film_id - Уникальный ключ. ID фильма
+   film_id - ID фильма (Внешний ключ)
+   
+   Поля user_id и film_id составляют первичный ключ.
 
 
 #### 4. Таблица friends:
 
-   user_id - Уникальный ключ. ID пользователя
+   user_id - ID пользователя (Внешний ключ)
 
-   friend_id - Уникальный ключ. ID друга пользователя
+   friend_id - ID друга пользователя (Внешний ключ)
 
    status - статус дружбы
+   
+   Поля user_id и friend_id составляют первичный ключ.
 
 
 #### 6. Таблица genre:
 
-   genre_id - Уникальный ключ. ID жанра фильма
+   genre_id - ID жанра фильма (Первичный ключ)
 
    name - жанр фильма
 
 
 #### 7. Таблица mpa:
 
-   mpa_id - Уникальный ключ . ID Рейтинга фильма
+   mpa_id - ID Рейтинга фильма (Первичный ключ)
 
    rating - Рейтинг фильма. Значения могут быть следующими:
 
@@ -102,7 +108,7 @@ https://dbdiagram.io/d/6435bd658615191cfa8d2046
 
 #### 8. Таблица users:
 
-   user_id - Уникальный ключ. ID пользователя
+   user_id - ID пользователя (Первичный ключ)
 
    email - Почтовый адресс пользователя
 
