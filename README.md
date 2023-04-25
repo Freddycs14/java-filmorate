@@ -1,7 +1,7 @@
 # java-filmorate
 Template repository for Filmorate project.
 
-![123](https://user-images.githubusercontent.com/118081787/234121337-d3e50b08-38a4-4d42-94ab-2f96c65b7552.jpg)
+![123](https://user-images.githubusercontent.com/118081787/234383103-0b766592-def0-458b-9069-a604dc60fb5b.jpg)
 
 
 Ссылка на диаграмму:
@@ -29,13 +29,11 @@ https://dbdiagram.io/d/6435bd658615191cfa8d2046
 
 
       SELECT *
-      FROM films
-      WHERE film_id IN
-         (SELECT film.id
-         FROM likes
-         GROUP BY film_id
-         ORDER BY COUNT(user_id) DESC
-         LIMIT 5);
+      FROM films AS f
+      RIGHT JOIN film_likes AS fl ON f.film_id = fl.film_id
+      GROUP BY fl.film_id
+      ORDER BY SUM(user_id) DESC
+      LIMIT 5;
 
 ### Пояснения к диаграмме:
 #### 1. Таблица films:
