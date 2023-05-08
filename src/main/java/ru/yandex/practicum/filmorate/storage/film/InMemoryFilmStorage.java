@@ -1,10 +1,11 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -24,7 +25,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film createFilm(Film film) {
         validateDate(film);
         film.setId(getNextId());
-        film.setLikes(new HashSet<>());
+        //film.setLikes(new HashSet<>());
         films.put(film.getId(), film);
         log.info("Добавление фильма");
         return film;
@@ -37,7 +38,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (films.containsKey(id)) {
             Film oldFilm = films.get(id);
             Set<Integer> likes = oldFilm.getLikes();
-            film.setLikes(likes);
+            //film.setLikes(likes);
             films.put(id, film);
         } else {
             throw new FilmNotFoundException("Фильма нет в списке");
@@ -98,6 +99,23 @@ public class InMemoryFilmStorage implements FilmStorage {
                     return -1 * comp;
                 }).limit(count)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void addGenreToFilm(int filmId, int genreId) {
+        System.out.println("Заглушка");
+    }
+
+    @Override
+    public void deleteGenreFromFilm(int filmId, int genreId) {
+        System.out.println("Заглушка");
+    }
+
+    @Override
+    public List<Integer> getLikesByFilm(int filmId) {
+        System.out.println("Заглушка");
+        List<Integer> likes = new ArrayList<>();
+        return likes;
     }
 
     private int getNextId() {

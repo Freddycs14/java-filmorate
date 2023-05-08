@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,6 @@ public class InMemoryUserStorage implements UserStorage {
                     .build();
         }
         user.setId(getNextId());
-        user.setFriends(new HashSet<>());
         users.put(user.getId(), user);
         log.info("Добавление пользователя");
         return user;
@@ -42,14 +41,13 @@ public class InMemoryUserStorage implements UserStorage {
             Set<Integer> friends = oldUser.getFriends();
             if (user.getName() == null || user.getName().isBlank()) {
                 user = User.builder()
-                    .email(user.getEmail())
-                    .login(user.getLogin())
-                    .name(user.getLogin())
-                    .birthday(user.getBirthday())
-                    .build();
+                        .email(user.getEmail())
+                        .login(user.getLogin())
+                        .name(user.getLogin())
+                        .birthday(user.getBirthday())
+                        .build();
             }
             user.setId(id);
-            user.setFriends(friends);
             users.put(user.getId(), user);
         } else {
             throw new UserNotFoundException("Пользователь не найден");
@@ -90,11 +88,11 @@ public class InMemoryUserStorage implements UserStorage {
         if (users.get(userId).getFriends().contains(friendId)) {
             throw new ValidationException("Нельзя добавить пользователя в друзья дважды");
         }
-        addToFriends(userId,friendId);
+        addToFriends(userId, friendId);
         if (users.get(friendId).getFriends().contains(userId)) {
             throw new ValidationException("Нельзя добавить пользователя в друзья дважды");
         }
-        addToFriends(friendId,userId);
+        addToFriends(friendId, userId);
         log.info("Пользователь с id: {} добавил в друзья пользователя с id: {}", userId, friendId);
         return users.get(userId);
     }
@@ -103,9 +101,9 @@ public class InMemoryUserStorage implements UserStorage {
     public User deleteFriend(int userId, int friendId) {
         checkUsers(userId);
         checkUsers(friendId);
-        removeFromFriends(userId,friendId);
+        removeFromFriends(userId, friendId);
 
-        removeFromFriends(friendId,userId);
+        removeFromFriends(friendId, userId);
         log.info("Пользователь с id: {} удалён из списка друзей пользователя с id: {}", friendId, userId);
         return users.get(userId);
     }
