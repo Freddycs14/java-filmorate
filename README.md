@@ -1,11 +1,8 @@
 # java-filmorate
 Template repository for Filmorate project.
 
-![123](https://user-images.githubusercontent.com/118081787/234383103-0b766592-def0-458b-9069-a604dc60fb5b.jpg)
+![](123.jpg)
 
-
-Ссылка на диаграмму:
-https://dbdiagram.io/d/6435bd658615191cfa8d2046
 
 ### Примеры запросов:
 #### 1. Получение списка всех фильмов:
@@ -28,12 +25,16 @@ https://dbdiagram.io/d/6435bd658615191cfa8d2046
 #### 3. Получение списка топ-5 фильмов по популярности:
 
 
-      SELECT *
+      SELECT f.*, m.name AS mpa_name
       FROM films AS f
-      RIGHT JOIN film_likes AS fl ON f.film_id = fl.film_id
-      GROUP BY fl.film_id
-      ORDER BY SUM(user_id) DESC
-      LIMIT 5;
+      JOIN mpa AS m ON f.mpa_id = m.mpa_id
+      LEFT JOIN (SELECT film_id, COUNT(user_id) AS likes_count
+                 FROM film_likes
+                 GROUP BY film_id
+                 ORDER BY likes_count) AS popular ON f.film_id = popular.film_id
+      ORDER BY popular.likes_count
+      DESC limit 5;
+
 
 ### Пояснения к диаграмме:
 #### 1. Таблица films:
@@ -91,7 +92,7 @@ https://dbdiagram.io/d/6435bd658615191cfa8d2046
 
    mpa_id - ID Рейтинга фильма (Первичный ключ)
 
-   rating - Рейтинг фильма. Значения могут быть следующими:
+   name - Рейтинг фильма. Значения могут быть следующими:
 
    - G — у фильма нет возрастных ограничений,
 

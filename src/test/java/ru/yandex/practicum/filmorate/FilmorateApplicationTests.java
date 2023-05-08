@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate;
 
 import lombok.RequiredArgsConstructor;
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +22,8 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
@@ -101,8 +100,8 @@ public class FilmorateApplicationTests {
     @Test
     public void shouldUpdateFilm() {
         filmService.createFilm(film1);
-        Film updateFilm = Film.builder().id(1).name("You Don't Mess with the Zohan").
-                description("description").releaseDate(LocalDate.of(2008, 6, 6))
+        Film updateFilm = Film.builder().id(1).name("You Don't Mess with the Zohan")
+                .description("description").releaseDate(LocalDate.of(2008, 6, 6))
                 .mpa(Mpa.builder().id(3).build()).build();
         Film updatedFilm = filmService.updateFilm(updateFilm);
         assertThat(updatedFilm)
@@ -112,16 +111,16 @@ public class FilmorateApplicationTests {
 
         FilmNotFoundException e = assertThrows(
                 FilmNotFoundException.class,
-                () -> filmService.updateFilm(Film.builder().id(-1).name("You Don't Mess with the Zohan").
-                        description("description").releaseDate(LocalDate.of(2008, 6, 6))
+                () -> filmService.updateFilm(Film.builder().id(-1).name("You Don't Mess with the Zohan")
+                        .description("description").releaseDate(LocalDate.of(2008, 6, 6))
                         .mpa(Mpa.builder().id(3).build()).build())
         );
         assertEquals("Фильм с id -1 не найден", e.getMessage());
 
         e = assertThrows(
                 FilmNotFoundException.class,
-                () -> filmService.updateFilm(Film.builder().id(999).name("You Don't Mess with the Zohan").
-                        description("description").releaseDate(LocalDate.of(2008, 6, 6))
+                () -> filmService.updateFilm(Film.builder().id(999).name("You Don't Mess with the Zohan")
+                        .description("description").releaseDate(LocalDate.of(2008, 6, 6))
                         .mpa(Mpa.builder().id(3).build()).build())
         );
         assertEquals("Фильм с id 999 не найден", e.getMessage());
