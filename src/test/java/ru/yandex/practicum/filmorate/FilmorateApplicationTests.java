@@ -169,7 +169,7 @@ public class FilmorateApplicationTests {
     @Test
     public void testAddGenreToFilm() {
         filmService.createFilm(film1);
-        filmService.addGenreToFilm(1,1);
+        filmService.addGenreToFilm(1, 1);
 
         List<Genre> genres = genreStorage.getGenreFilmId(1);
         assertNotNull(genres, "Список жанров фильма не пустой");
@@ -180,12 +180,12 @@ public class FilmorateApplicationTests {
     @Test
     public void testDeleteGenreFromFilm() {
         filmService.createFilm(film1);
-        filmService.addGenreToFilm(1,1);
+        filmService.addGenreToFilm(1, 1);
         List<Genre> genres = genreStorage.getGenreFilmId(1);
         assertNotNull(genres, "Список жанров фильма не пустой");
         assertEquals(genres.size(), 1, "Количество жанров в фильме не верное");
         assertEquals(genres.get(0).getId(), 1, "Значение id жанра в списке не совпадает");
-        filmService.deleteGenreFromFilm(1,1);
+        filmService.deleteGenreFromFilm(1, 1);
         genres = genreStorage.getGenreFilmId(1);
         assertThat(genres)
                 .isNotNull()
@@ -268,7 +268,7 @@ public class FilmorateApplicationTests {
     public void testAddFriend() {
         userService.createUser(user1);
         User friend = userService.createUser(user2);
-        userService.addFriend(1,2);
+        userService.addFriend(1, 2);
         List<User> friends = userService.getUserFriends(1);
         assertNotNull(friends, "Список друзей пустой");
         assertEquals(friends.size(), 1, "Количество друзей в списке не верное");
@@ -279,13 +279,13 @@ public class FilmorateApplicationTests {
     public void testDeleteFriend() {
         userService.createUser(user1);
         User friend = userService.createUser(user2);
-        userService.addFriend(1,2);
+        userService.addFriend(1, 2);
         List<User> friends = userService.getUserFriends(1);
         assertNotNull(friends, "Список друзей пустой");
         assertEquals(friends.size(), 1, "Количество друзей в списке не верное");
         assertEquals(friends.get(0), friend, "Пользователи в списках не совпадают");
 
-        userService.deleteFriend(1,2);
+        userService.deleteFriend(1, 2);
         friends = userService.getUserFriends(1);
         assertThat(friends)
                 .isNotNull()
@@ -300,7 +300,7 @@ public class FilmorateApplicationTests {
         assertThat(friends)
                 .isNotNull()
                 .isEqualTo(Collections.emptyList());
-        userService.addFriend(1,2);
+        userService.addFriend(1, 2);
         friends = userService.getUserFriends(1);
         assertNotNull(friends, "Список друзей пустой");
         assertEquals(friends.size(), 1, "Количество друзей в списке не верное");
@@ -312,15 +312,15 @@ public class FilmorateApplicationTests {
         userService.createUser(user1);
         userService.createUser(user2);
         User commonFriend = userService.createUser(user3);
-        List<User> commonFriends = userService.getListCommonFriends(1,2);
+        List<User> commonFriends = userService.getListCommonFriends(1, 2);
         assertThat(commonFriends)
                 .isNotNull()
                 .isEqualTo(Collections.emptyList());
-        userService.addFriend(1,2);
-        userService.addFriend(1,3);
-        userService.addFriend(2,1);
-        userService.addFriend(2,3);
-        commonFriends = userService.getListCommonFriends(1,2);
+        userService.addFriend(1, 2);
+        userService.addFriend(1, 3);
+        userService.addFriend(2, 1);
+        userService.addFriend(2, 3);
+        commonFriends = userService.getListCommonFriends(1, 2);
         assertNotNull(commonFriends, "Список друзей пустой");
         assertEquals(commonFriends.size(), 1, "Количество общих друзей в списке не верное");
         assertEquals(commonFriends.get(0), commonFriend, "Пользователи в списках не совпадают");
@@ -330,7 +330,7 @@ public class FilmorateApplicationTests {
     public void shouldAddLike() {
         filmService.createFilm(film1);
         userService.createUser(user1);
-        filmService.addLike(1,1);
+        filmService.addLike(1, 1);
         List<Integer> likes = filmService.getLikesByFilm(1);
         assertNotNull(likes, "Список лайков пустой");
         assertEquals(likes.size(), 1, "Количество лайков в списке не верное");
@@ -341,12 +341,12 @@ public class FilmorateApplicationTests {
     public void shouldDeleteLike() {
         filmService.createFilm(film1);
         userService.createUser(user1);
-        filmService.addLike(1,1);
+        filmService.addLike(1, 1);
         List<Integer> likes = filmService.getLikesByFilm(1);
         assertNotNull(likes, "Список лайков пустой");
         assertEquals(likes.size(), 1, "Количество лайков в списке не верное");
         assertEquals(likes.get(0), 1, "Лайки от пользователей не совпадают");
-        filmService.deleteLike(1,1);
+        filmService.deleteLike(1, 1);
         likes = filmService.getLikesByFilm(1);
         assertThat(likes)
                 .isNotNull()
@@ -369,9 +369,9 @@ public class FilmorateApplicationTests {
         Film thirdFilm = filmService.createFilm(film3);
         userService.createUser(user1);
         userService.createUser(user2);
-        filmService.addLike(2,1);
-        filmService.addLike(2,2);
-        filmService.addLike(1,1);
+        filmService.addLike(2, 1);
+        filmService.addLike(2, 2);
+        filmService.addLike(1, 1);
         List<Film> topFilms = filmService.getTopFilms(3);
         assertNotNull(topFilms, "Список популярных фильмов пустой");
         assertEquals(topFilms.size(), 3, "Количество фильмов в списке не верное");
@@ -379,13 +379,6 @@ public class FilmorateApplicationTests {
         assertEquals(topFilms.get(1).getName(), firstFilm.getName(), "Фильмы не совпадают");
         assertEquals(topFilms.get(2).getName(), thirdFilm.getName(), "Фильмы не совпадают");
     }
-
-
-
-
-
-
-
 
 
 }

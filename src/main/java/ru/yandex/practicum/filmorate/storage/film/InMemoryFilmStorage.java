@@ -77,14 +77,14 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (films.get(filmId).getLikes().contains(userId)) {
             throw new ValidationException("Пользователь с id: " + userId + " уже поставил лайк этому фильму");
         }
-        putLike(filmId,userId);
+        putLike(filmId, userId);
         log.info("Пользователь с id: {} поставил лайк фильму с id: {}", userId, filmId);
         return films.get(filmId);
     }
 
     @Override
     public Film deleteLike(int filmId, int userId) {
-        removeLike(filmId,userId);
+        removeLike(filmId, userId);
         log.info("Пользователь с id: {} удалил лайк фильму с id: {}", userId, filmId);
         return films.get(filmId);
     }
