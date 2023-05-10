@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 
+import static ru.yandex.practicum.filmorate.constants.Constant.*;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -20,16 +22,14 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public List<Genre> getAllGenre() {
-        String sqlQuery = "SELECT * FROM genre ORDER BY genre_id";
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRow(rs));
+        return jdbcTemplate.query(GET_ALL_GENRE, (rs, rowNum) -> mapRow(rs));
     }
 
     @Override
     public Genre getGenreById(int id) {
-        String sqlQuery = "SELECT * FROM genre WHERE genre_id = ?";
-        SqlRowSet genreRows = jdbcTemplate.queryForRowSet(sqlQuery, id);
+        SqlRowSet genreRows = jdbcTemplate.queryForRowSet(GET_GENRE_BY_ID, id);
         if (genreRows.next()) {
-            return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> mapRow(rs), id);
+            return jdbcTemplate.queryForObject(GET_GENRE_BY_ID, (rs, rowNum) -> mapRow(rs), id);
         } else {
             log.warn("Жанр с идентификатором {} не найден", id);
             throw new GenreNotFoundException("Жанра с id = " + id + " нет в списке");
@@ -38,9 +38,7 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public List<Genre> getGenreFilmId(int id) {
-        String sqlQuery = "SELECT g.* FROM film_genre AS fg JOIN genre AS g ON fg.genre_id = g.genre_id " +
-                "WHERE fg.film_id = ? ORDER BY g.genre_id";
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> mapRow(rs), id);
+        return jdbcTemplate.query(GET_GENRE_FROM_FILM, (rs, rowNum) -> mapRow(rs), id);
     }
 
     private Genre mapRow(ResultSet rs) throws SQLException {
