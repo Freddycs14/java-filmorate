@@ -78,17 +78,10 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getListFilms() {
-        //return jdbcTemplate.query(GET_LIST_FILMS, (rs, rowNum) -> mapRow(rs));
         List<Film> films = jdbcTemplate.query(GET_LIST_FILMS, (rs, rowNum) -> mapRow(rs));
         for (Film film : films) {
-            if (film.getGenres() != null) {
-                for (Genre genre : film.getGenres()) {
-                    jdbcTemplate.update(INSERT_FILM_GENRE, film.getId(), genre.getId());
-                }
-            }
-            if (film.getGenres().size() == 0) {
-                log.error("Список фильмов пуст");
-            }
+            List<Genre> genres = jdbcTemplate.query(GET_GENRE_FROM_FILM, (rs, rowNum) -> mapRowGenre(rs), film.getId());
+            film.getGenres().addAll(genres);
         }
         log.info("Получен список всех фильмов");
         return films;
@@ -166,6 +159,13 @@ public class FilmDbStorage implements FilmStorage {
                 .releaseDate(releaseDate)
                 .duration(duration)
                 .mpa(mpa)
+                .build();
+    }
+
+    private Genre mapRowGenre(ResultSet rs) throws SQLException {
+        return Genre.builder()
+                .id(rs.getInt("genre_id"))
+                .name(rs.getString("name"))
                 .build();
     }
 

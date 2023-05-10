@@ -143,8 +143,10 @@ public class FilmorateApplicationTests {
                 .isNotNull()
                 .isEqualTo(Collections.emptyList());
         filmService.createFilm(film1);
+        filmService.addGenreToFilm(1,1);
+        filmService.addGenreToFilm(1,2);
         films = filmService.getListFilms();
-        assertNotNull(films, "Cписок фильма не пустой");
+        assertNotNull(films, "Cписок фильмов не пустой");
         assertEquals(films.size(), 1, "Количество фильмов в списке не верное");
         assertEquals(films.get(0).getId(), 1, "Значение id фильма в списке не совпадает");
     }
@@ -169,7 +171,6 @@ public class FilmorateApplicationTests {
     public void testAddGenreToFilm() {
         filmService.createFilm(film1);
         filmService.addGenreToFilm(1, 1);
-
         List<Genre> genres = genreStorage.getGenreFilmId(1);
         assertNotNull(genres, "Список жанров фильма не пустой");
         assertEquals(genres.size(), 1, "Количество жанров в фильме не верное");
