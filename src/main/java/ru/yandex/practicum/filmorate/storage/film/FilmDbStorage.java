@@ -78,13 +78,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getListFilms() {
-        List<Film> films = jdbcTemplate.query(GET_LIST_FILMS, (rs, rowNum) -> mapRow(rs));
-        for (Film film : films) {
-            List<Genre> genres = jdbcTemplate.query(GET_GENRE_FROM_FILM, (rs, rowNum) -> mapRowGenre(rs), film.getId());
-            film.getGenres().addAll(genres);
-        }
-        log.info("Получен список всех фильмов");
-        return films;
+        return jdbcTemplate.query(GET_LIST_FILMS, (rs, rowNum) -> mapRow(rs));
     }
 
     @Override

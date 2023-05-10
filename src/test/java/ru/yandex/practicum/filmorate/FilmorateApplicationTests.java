@@ -143,8 +143,6 @@ public class FilmorateApplicationTests {
                 .isNotNull()
                 .isEqualTo(Collections.emptyList());
         filmService.createFilm(film1);
-        filmService.addGenreToFilm(1,1);
-        filmService.addGenreToFilm(1,2);
         films = filmService.getListFilms();
         assertNotNull(films, "Cписок фильмов не пустой");
         assertEquals(films.size(), 1, "Количество фильмов в списке не верное");
@@ -159,7 +157,6 @@ public class FilmorateApplicationTests {
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("id", 1)
                 .hasFieldOrPropertyWithValue("name", "The Green Mile");
-
         FilmNotFoundException e = assertThrows(FilmNotFoundException.class, () -> filmService.getFilmById(-1));
         assertEquals("Фильм с id -1 не найден", e.getMessage());
 
