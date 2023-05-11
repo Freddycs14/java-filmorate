@@ -127,14 +127,13 @@ public class FilmorateApplicationTests {
     }
 
 
-
     @Test
     public void shouldListFilm() {
         filmService.createFilm(film1);
         filmService.createFilm(film2);
-        filmService.addGenreToFilm(1,1);
-        filmService.addGenreToFilm(1,2);
-        filmService.addGenreToFilm(2,3);
+        filmService.addGenreToFilm(1, 1);
+        filmService.addGenreToFilm(1, 2);
+        filmService.addGenreToFilm(2, 3);
         List<Film> films = filmService.getListFilms();
         System.out.println(films);
     }
@@ -195,7 +194,7 @@ public class FilmorateApplicationTests {
         assertNotNull(genres, "Список жанров фильма не пустой");
         assertEquals(genres.size(), 1, "Количество жанров в фильме не верное");
         assertEquals(genres.get(0).getId(), 1, "Значение id жанра в списке не совпадает");
-        filmService.deleteGenreFromFilm(1 );
+        filmService.deleteGenreFromFilm(1);
         genres = genreStorage.getGenreFilmId(1);
         assertThat(genres)
                 .isNotNull()
@@ -382,9 +381,9 @@ public class FilmorateApplicationTests {
         filmService.addLike(2, 1);
         filmService.addLike(2, 2);
         filmService.addLike(1, 1);
-        filmService.addGenreToFilm(1,1);
-        filmService.addGenreToFilm(2,2);
-        filmService.addGenreToFilm(3,3);
+        filmService.addGenreToFilm(1, 1);
+        filmService.addGenreToFilm(2, 2);
+        filmService.addGenreToFilm(3, 3);
 
         List<Film> topFilms = filmService.getTopFilms(3);
         assertNotNull(topFilms, "Список популярных фильмов пустой");
