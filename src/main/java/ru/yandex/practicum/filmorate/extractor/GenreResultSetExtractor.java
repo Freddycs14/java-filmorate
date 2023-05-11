@@ -14,7 +14,7 @@ import java.util.*;
 
 @Slf4j
 @Component
-public class GenreResultSetExtractor implements ResultSetExtractor <Map<Film, List<Genre>>> {
+public class GenreResultSetExtractor implements ResultSetExtractor<Map<Film, List<Genre>>> {
 
     @Override
     public Map<Film, List<Genre>> extractData(ResultSet rs) throws SQLException, DataAccessException {
@@ -33,16 +33,16 @@ public class GenreResultSetExtractor implements ResultSetExtractor <Map<Film, Li
                     .build();
             if (data.containsKey(film)) {
                 data.get(film).add(Genre.builder()
-                                        .id(rs.getInt("genre_id"))
-                                        .name(rs.getString("genre_name"))
-                                        .build());
+                        .id(rs.getInt("genre_id"))
+                        .name(rs.getString("genre_name"))
+                        .build());
             } else {
                 data.put(film, new ArrayList<>());
                 if (rs.getInt("genre_id") != 0) {
                     data.get(film).add(Genre.builder()
-                                            .id(rs.getInt("genre_id"))
-                                            .name(rs.getString("genre_name"))
-                                            .build());
+                            .id(rs.getInt("genre_id"))
+                            .name(rs.getString("genre_name"))
+                            .build());
                 }
             }
         }
