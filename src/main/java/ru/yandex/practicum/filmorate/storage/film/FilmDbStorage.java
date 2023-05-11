@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -17,9 +18,9 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import static ru.yandex.practicum.filmorate.constants.Constant.*;
 
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Repository("FilmDbStorage")
 @Component
@@ -27,14 +28,14 @@ import java.util.Objects;
 @Slf4j
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
+    private final ArrayList<Integer> listIdFilms = new ArrayList<>();
+
 
     @Override
     public Film createFilm(Film film) {
         validateMpa(film.getMpa().getId());
         validateDate(film);
-        for (Genre genre : film.getGenres()) {
-            validateGenre(genre.getId());
-        }
+        film.setGenres(new HashSet<>());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(INSERT_FILM, Statement.RETURN_GENERATED_KEYS);
@@ -46,22 +47,38 @@ public class FilmDbStorage implements FilmStorage {
             return ps;
         }, keyHolder);
         film.setId(Objects.requireNonNull(keyHolder.getKey()).intValue());
-        film.getGenres().forEach(genre -> addGenreToFilm(film.getId(), genre.getId()));
+        listIdFilms.add(film.getId());
+        if (film.getGenres() != null) {
+            for (Genre genre : film.getGenres()) {
+                jdbcTemplate.update(INSERT_FILM_GENRE, film.getId(), genre.getId());
+            }
+        }
         log.info("Фильм {} сохранен", film);
         return film;
+
+
     }
 
     @Override
     public Film updateFilm(Film film) {
         validateDate(film);
-        if (jdbcTemplate.update(UPDATE_FILM, film.getName(),
-                film.getDescription(),
-                film.getReleaseDate(),
-                film.getDuration(),
-                film.getMpa().getId(),
-                film.getId()) > 0) {
-            jdbcTemplate.update(DELETE_FILM_GENRE, film.getId());
-            film.getGenres().forEach(genre -> addGenreToFilm(film.getId(), genre.getId()));
+        if (listIdFilms.contains(film.getId())) {
+            jdbcTemplate.update(UPDATE_FILM, film.getName(),
+                    film.getDescription(),
+                    film.getReleaseDate(),
+                    film.getDuration(),
+                    film.getMpa().getId(),
+                    film.getId());
+            deleteGenreFromFilm(film.getId());
+            if (film.getGenres() != null) {
+                for (Genre genre : film.getGenres()) {
+                    try {
+                        jdbcTemplate.update(INSERT_FILM_GENRE, film.getId(), genre.getId());
+                    } catch (DuplicateKeyException r) {
+                        log.error("Данный жанр уже добавлен");
+                    }
+                }
+            }
             log.info("Фильм {} обновлен в таблице", film);
             return film;
         }
@@ -78,13 +95,13 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getListFilms() {
-        return jdbcTemplate.query(GET_LIST_FILMS, (rs, rowNum) -> mapRow(rs));
+        return jdbcTemplate.query(GET_LIST_FILMS, (rs, rowNum) -> mapRowFilm(rs));
     }
 
     @Override
     public Film getFilmById(int id) {
         try {
-            return jdbcTemplate.queryForObject(GET_FILM_BY_ID, (rs, rowNum) -> mapRow(rs), id);
+            return jdbcTemplate.queryForObject(GET_FILM_BY_ID, (rs, rowNum) -> mapRowFilm(rs), id);
         } catch (DataRetrievalFailureException e) {
             log.warn("Фильм с id {} не найден", id);
             throw new FilmNotFoundException(String.format("Фильм с id %d не найден", id));
@@ -97,8 +114,8 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public void deleteGenreFromFilm(int filmId, int genreId) {
-        jdbcTemplate.update(DELETE_FILM_GENRE_FROM_FILM, filmId, genreId);
+    public void deleteGenreFromFilm(int filmId) {
+        jdbcTemplate.update(DELETE_FILM_GENRE_FROM_FILM, filmId);
     }
 
     @Override
@@ -129,10 +146,10 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getTopFilms(int count) {
-        return jdbcTemplate.query(GET_TOP_FILMS, (rs, rowNum) -> mapRow(rs), count);
+        return jdbcTemplate.query(GET_TOP_FILMS, (rs, rowNum) -> mapRowFilm(rs), count);
     }
 
-    private Film mapRow(ResultSet rs) throws SQLException {
+    private Film mapRowFilm(ResultSet rs) throws SQLException {
         int id = rs.getInt("film_id");
         String name = rs.getString("name");
         String description = rs.getString("description");
@@ -156,13 +173,6 @@ public class FilmDbStorage implements FilmStorage {
                 .build();
     }
 
-    private Genre mapRowGenre(ResultSet rs) throws SQLException {
-        return Genre.builder()
-                .id(rs.getInt("genre_id"))
-                .name(rs.getString("name"))
-                .build();
-    }
-
     private void validateDate(Film film) {
         if (film.getReleaseDate().isBefore(LIMIT_DATE)) {
             throw new ValidationException("Дата релиза не должна быть раньше 28 декабря 1895 года");
@@ -173,13 +183,6 @@ public class FilmDbStorage implements FilmStorage {
         if (mpaId <= 0 || mpaId > 5) {
             log.error("Неорректно переданны данные по Mpa");
             throw new MpaNotFoundException("Неорректно переданы данные по Mpa");
-        }
-    }
-
-    private void validateGenre(int genreId) {
-        if (genreId <= 0 || genreId > 6) {
-            log.error("Неорректно переданны данные по жанру");
-            throw new GenreNotFoundException("Неорректно переданы данные по жанру");
         }
     }
 

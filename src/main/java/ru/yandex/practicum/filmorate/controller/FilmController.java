@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -15,7 +16,7 @@ public class FilmController {
     private final FilmService filmService;
 
     @Autowired
-    public FilmController(FilmService filmService) {
+    public FilmController(@Qualifier("FilmDbService") FilmService filmService) {
         this.filmService = filmService;
     }
 

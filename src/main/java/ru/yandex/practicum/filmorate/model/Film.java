@@ -31,14 +31,6 @@ public class Film {
     @Positive
     private long duration;
     private Mpa mpa;
-    private final Set<Genre> genres = new HashSet<>();
+    private Set<Genre> genres;
     private final Set<Integer> likes = new HashSet<>();
-
-    public List<Genre> getGenres() {
-        return genres.stream().sorted(Comparator.comparingInt(Genre::getId)).collect(Collectors.toList());
-    }
-
-    public void addGenre(Genre genre) {
-        genres.add(genre);
-    }
 }

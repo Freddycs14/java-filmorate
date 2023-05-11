@@ -25,5 +25,5 @@ public interface FilmStorage {
 
     void addGenreToFilm(int filmId, int genreId);
 
-    void deleteGenreFromFilm(int filmId, int genreId);
+    void deleteGenreFromFilm(int filmId);
 }
