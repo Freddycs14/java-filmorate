@@ -1,73 +1,29 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
 
-@Service
-@Slf4j
-public class FilmService {
-    private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
+public interface FilmService {
+    Film createFilm(Film film);
 
-    @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
-        this.filmStorage = filmStorage;
-        this.userStorage = userStorage;
-    }
+    Film updateFilm(Film film);
 
-    public Film createFilm(Film film) {
-        return filmStorage.createFilm(film);
-    }
+    void addGenreToFilm(int filmId, int genreId);
 
-    public Film updateFilm(Film film) {
-        return filmStorage.updateFilm(film);
-    }
+    void deleteGenreFromFilm(int filmId);
 
-    public Film deleteFilm(Film film) {
-        return filmStorage.deleteFilm(film);
-    }
+    Film deleteFilm(Film film);
 
-    public List<Film> getListFilms() {
-        return filmStorage.getListFilms();
-    }
+    List<Film> getListFilms();
 
-    public Film getFilmById(int id) {
-        return filmStorage.getFilmById(id);
-    }
+    Film getFilmById(int id);
 
-    public Film addLike(int filmId, int userId) {
-        checkFilms(filmId);
-        checkUsers(userId);
-        return filmStorage.addLike(filmId, userId);
-    }
+    Film addLike(int filmId, int userId);
 
-    public Film deleteLike(int filmId, int userId) {
-        checkFilms(filmId);
-        checkUsers(userId);
-        return filmStorage.deleteLike(filmId, userId);
-    }
+    Film deleteLike(int filmId, int userId);
 
-    public List<Film> getTopFilms(int count) {
-        return filmStorage.getTopFilms(count);
-    }
+    List<Integer> getLikesByFilm(int filmId);
 
-    public void checkUsers(int userId) {
-        if (!userStorage.getListUsers().contains(userStorage.getUserById(userId))) {
-            throw new UserNotFoundException("Пользователь c id: " + userId + "не найден");
-        }
-    }
-
-    public void checkFilms(int filmId) {
-        if (!filmStorage.getListFilms().contains(filmStorage.getFilmById(filmId))) {
-            throw new FilmNotFoundException("Фильм c id: " + filmId + "не найден");
-        }
-    }
+    List<Film> getTopFilms(int count);
 }

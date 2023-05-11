@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.film;
 
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -19,5 +19,11 @@ public interface FilmStorage {
 
     Film deleteLike(int filmId, int userId);
 
+    List<Integer> getLikesByFilm(int filmId);
+
     List<Film> getTopFilms(int count);
+
+    void addGenreToFilm(int filmId, int genreId);
+
+    void deleteGenreFromFilm(int filmId);
 }

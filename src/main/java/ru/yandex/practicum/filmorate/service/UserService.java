@@ -1,57 +1,26 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
 
-@Service
-@Slf4j
-public class UserService {
+public interface UserService {
 
-    private final UserStorage userStorage;
+    User createUser(User user);
 
-    @Autowired
-    public UserService(UserStorage userStorage) {
-        this.userStorage = userStorage;
-    }
+    User updateUser(User user);
 
-    public User createUser(User user) {
-        return userStorage.createUser(user);
-    }
+    User deleteUser(User user);
 
-    public User updateUser(User user) {
-        return userStorage.updateUser(user);
-    }
+    List<User> getListUsers();
 
-    public User deleteUser(User user) {
-        return userStorage.deleteUser(user);
-    }
+    User getUserById(int id);
 
-    public List<User> getListUsers() {
-        return userStorage.getListUsers();
-    }
+    User addFriend(int userId, int friendId);
 
-    public User getUserById(int id) {
-        return userStorage.getUserById(id);
-    }
+    User deleteFriend(int userId, int friendId);
 
-    public User addFriend(int userId, int friendId) {
-        return userStorage.addFriend(userId, friendId);
-    }
+    List<User> getUserFriends(int userId);
 
-    public User deleteFriend(int userId, int friendId) {
-        return userStorage.deleteFriend(userId, friendId);
-    }
-
-    public List<User> getUserFriends(int userId) {
-        return userStorage.getUserFriends(userId);
-    }
-
-    public List<User> getListCommonFriends(int firstUserId, int secondUserId) {
-        return userStorage.getListCommonFriends(firstUserId, secondUserId);
-    }
+    List<User> getListCommonFriends(int firstUserId, int secondUserId);
 }
