@@ -35,7 +35,6 @@ public class FilmDbStorage implements FilmStorage {
     public Film createFilm(Film film) {
         validateMpa(film.getMpa().getId());
         validateDate(film);
-        film.setGenres(new HashSet<>());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(INSERT_FILM, Statement.RETURN_GENERATED_KEYS);

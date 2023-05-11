@@ -43,7 +43,7 @@ public class FilmDbService implements FilmService {
         Map<Film, List<Genre>> data = genreStorage.getGenreAllFilms();
         for (Film filmFromList : films) {
             if (data.containsKey(filmFromList)) {
-                Set<Genre> genres = new HashSet<>();
+                LinkedHashSet<Genre> genres = new LinkedHashSet<>();
                 genres.addAll(data.get(filmFromList));
                 filmFromList.setGenres(genres);
             }
@@ -56,7 +56,7 @@ public class FilmDbService implements FilmService {
         Film film = filmStorage.getFilmById(id);
         Map<Film, List<Genre>> data = genreStorage.getGenreAllFilms();
         if (data.containsKey(film)) {
-            Set<Genre> genres = new HashSet<>();
+            LinkedHashSet<Genre> genres = new LinkedHashSet<>();
             genres.addAll(data.get(film));
             film.setGenres(genres);
         }
@@ -84,7 +84,7 @@ public class FilmDbService implements FilmService {
         Map<Film, List<Genre>> data = genreStorage.getGenreAllFilms();
         for (Film filmFromList : films) {
             if (data.containsKey(filmFromList)) {
-                Set<Genre> genres = new HashSet<>();
+                LinkedHashSet<Genre> genres = new LinkedHashSet<>();
                 genres.addAll(data.get(filmFromList));
                 filmFromList.setGenres(genres);
             }
